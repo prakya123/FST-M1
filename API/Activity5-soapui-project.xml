@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="93589ff1-a248-4ff4-9a35-0aa8e66a16ec" activeEnvironment="Default" name="Activity5" resourceRoot="" soapui-version="5.9.1" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:RestService" id="2604d0a6-b86c-4d5c-a921-69da820a0c76" wadlVersion="http://wadl.dev.java.net/2009/02" name="http://ipwhois.app" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache/><con:endpoints><con:endpoint>http://ipwhois.app</con:endpoint></con:endpoints><con:resource name="IP" path="/json/{IP}" id="193270e8-bde9-4852-a9ca-8de54efb5419"><con:settings/><con:parameters><con:parameter><con:name>IP</con:name><con:value>IP</con:value><con:style>TEMPLATE</con:style><con:default>IP</con:default><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:method name="IP 1" id="45b2c105-78f7-45c5-bafd-16381f415d4d" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:ns="http://ipwhois.app/json/164.172.55.44%20">ns:Response</con:element></con:representation><con:request name="Request 1" id="0e5d7264-38ff-41ce-8f3f-a0828c42f9cd" mediaType="application/json"><con:settings/><con:endpoint>http://ipwhois.app</con:endpoint><con:request/><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="IP" value="" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>IP</con:entry></con:parameterOrder></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:RestService" id="63819c76-0613-4626-8c81-b6b534a59103" wadlVersion="http://wadl.dev.java.net/2009/02" name="Activity5" type="rest" definitionUrl="params" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache/><con:endpoints/></con:interface><con:testSuite id="d40c9786-8073-4a83-9a6e-c85c5855d44a" name="Activity5_Suite"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="91a943da-0364-4ce3-8874-8fd3f4ec14f9" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Activity5_TestCase" searchProperties="true"><con:settings/><con:testStep type="restrequest" name="IP 1 - Request 1" id="54eb7279-4a25-4bc2-a4d7-27a11751b6be"><con:settings/><con:config service="http://ipwhois.app" resourcePath="/json/{IP}" methodName="IP 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="IP 1 - Request 1" id="0e5d7264-38ff-41ce-8f3f-a0828c42f9cd" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://ipwhois.app</con:endpoint><con:request/><con:originalUri>http://ipwhois.app/json/149.147.244.212%20</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="IP" value="${#TestCase#IP} " xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>IP</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="RunFromFile" id="4545499d-09ae-4f49-9412-84f4606a8904"><con:settings/><con:config><script>// ======================================================
+//  DATA-DRIVEN SOAPUI (TEXT FILE) – FINAL WORKING SCRIPT
+// ======================================================
+
+// 🔹 1. REAL PATH OF YOUR FILE
+def filePath = 'C:/Users/002BWI744/Desktop/FST/FST_API/activity5_ips.txt'
+
+// 🔹 2. SoapUI Request TestStep Name
+def requestStepName = 'IP 1 - Request 1'
+
+// ======================================================
+//  DO NOT CHANGE ANYTHING BELOW THIS LINE
+// ======================================================
+
+def ipFile = new File(filePath)
+
+if (!ipFile.exists()) {
+    log.error "File not found: $filePath"
+    assert false : "Text file not found. Please check the file path."
+}
+
+// Read all non-empty lines (each IP)
+def ips = ipFile.readLines().findAll { it.trim() }
+
+def testCase = context.testCase
+def requestStep = testCase.getTestStepByName(requestStepName)
+
+// Loop through each IP and run the request
+ips.eachWithIndex { ip, i ->
+
+    def cleanIp = ip.trim()
+    log.info "=============================================="
+    log.info " Running Request ${i+1} for IP: ${cleanIp}"
+    log.info "=============================================="
+
+    // Set IP value into TestCase property
+    testCase.setPropertyValue('IP', cleanIp)
+
+    // Run the request (SoapUI 5.9.1 syntax)
+    def result = requestStep.run(testRunner, context)
+
+    assert result.response, "No response received for IP ${cleanIp}"
+
+    log.info "Success: Response received for ${cleanIp}"
+    log.info "----------------------------------------------"
+}
+
+log.info "All IPs executed successfully!"
+</script></con:config></con:testStep><con:properties><con:property><con:name>IP</con:name><con:value>94.127.62.254</con:value></con:property></con:properties></con:testCase><con:properties/></con:testSuite><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>

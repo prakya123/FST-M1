@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="fa921183-f957-44c9-966a-dbcc7785060c" activeEnvironment="Default" name="Activity4" soapui-version="5.9.1" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:RestService" id="77a0a8e1-3845-42cc-82ce-d4f9cda1cc95" wadlVersion="http://wadl.dev.java.net/2009/02" name="http://ipwhois.app" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache/><con:endpoints><con:endpoint>http://ipwhois.app</con:endpoint></con:endpoints><con:resource name="IP" path="/json/" id="2c5aa85e-2000-4519-b466-4948d0dbb64a"><con:settings/><con:parameters><con:parameter><con:name>IP</con:name><con:value>IP</con:value><con:style>TEMPLATE</con:style><con:default>IP</con:default><con:path xsi:nil="true"/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:method name="IP 1" id="53d27eb2-4e67-40aa-891b-5f1ada1eb316" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:ns="http://ipwhois.app/json/8.8.8.8%20">ns:Response</con:element></con:representation><con:request name="Request 1" id="a01f6480-0852-4c28-810a-dbf6c0731f64" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://ipwhois.app</con:endpoint><con:request/><con:originalUri>http://ipwhois.app/json/8.8.8.8%20</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="IP" value="8.8.8.8 " xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>IP</con:entry></con:parameterOrder></con:request></con:method></con:resource></con:interface><con:testSuite id="005af2a6-777a-42fc-9990-a6260c621c30" name="Activity4Suite"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="7472cf4e-4359-4a84-bb42-3e260d7fb3d6" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="DataDrivenTest" searchProperties="true"><con:settings/><con:testStep type="restrequest" name="IP 1 - Request 1" id="2a3d1fb4-db76-4ce3-9aca-42afd027adf3"><con:settings/><con:config service="http://ipwhois.app" resourcePath="/json/" methodName="IP 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="IP 1 - Request 1" id="a01f6480-0852-4c28-810a-dbf6c0731f64" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://ipwhois.app</con:endpoint><con:request/><con:originalUri>http://ipwhois.app/json/8.8.8.8%20</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="IP" value="8.8.8.8" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder><con:entry>IP</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="RunDataSource" id="4d554b64-0f14-4e8c-bb3a-a655f0b73cf2"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+
+// Path to your text file containing IPs
+def filePath = "C:/Users/002BWI744/Desktop/FST/FST_API/ips.txt"
+
+// Read all IP addresses from the file
+def ipList = new File(filePath).readLines()
+
+// Get this test case and the REST Request test step
+def testCase = context.testCase
+def requestStep = testCase.testSteps["IP 1 - Request 1"]   // Correct test step name
+
+// Loop through each IP address
+for (ip in ipList) {
+    
+    log.info("---------------------------------------")
+    log.info("Testing IP: " + ip)
+
+    // Set the IP value into the request parameter
+    requestStep.setPropertyValue("IP", ip)
+
+    // Execute the request and get the RESPONSE AS STRING
+    def responseText = requestStep.run(testRunner, context).response.contentAsString
+
+    // Parse the JSON response
+    def json = new JsonSlurper().parseText(responseText)
+    
+    // Print useful response fields
+    log.info("Success: " + json.success)
+    log.info("Country: " + json.country)
+    log.info("City: " + json.city)
+    log.info("Continent: " + json.continent)
+
+    // Assertion check
+    assert json.success == true : "API returned failure for IP: ${ip}"
+}
+
+log.info("======== DATA DRIVEN TEST COMPLETED SUCCESSFULLY ========")
+</script></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/></con:soapui-project>
