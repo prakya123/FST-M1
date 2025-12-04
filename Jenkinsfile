@@ -4,12 +4,11 @@ node {
         git url: 'https://github.com/prakya123/FST-M1.git', branch: 'main'
     }
 
-    stage('Build & Test') {
-        sh 'mvn clean test'
+    stage('Compile Java') {
+        sh 'javac -cp libs/*:. *.java'
     }
 
-    stage('Publish TestNG Results') {
-        junit '**/test-output/testng-results.xml'
-        archiveArtifacts artifacts: 'test-output/**/*', fingerprint: true
+    stage('Run TestNG') {
+        sh 'java -cp libs/*:. org.testng.TestNG testng.xml'
     }
 }
