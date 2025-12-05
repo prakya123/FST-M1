@@ -4,24 +4,20 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/prakya123/FST-M1.git'
+                git url: 'https://github.com/prakya123/FST-M1.git', branch: 'main'
             }
         }
 
         stage('Build & Test') {
             steps {
-                dir('FST-M1') {   // <--- IMPORTANT: run Maven inside the folder that has pom.xml
-                    sh 'mvn clean test'
-                }
+                sh 'mvn -B clean test'
             }
         }
     }
 
     post {
         always {
-            dir('FST-M1') {   // <--- report also inside same directory
-                junit '**/surefire-reports/*.xml'
-            }
+            junit '**/target/surefire-reports/*.xml'
         }
     }
 }
