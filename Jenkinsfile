@@ -10,14 +10,18 @@ pipeline {
 
         stage('Build & Test') {
             steps {
-                sh 'mvn clean test'
+                dir('FST-M1') {   // <--- IMPORTANT: run Maven inside the folder that has pom.xml
+                    sh 'mvn clean test'
+                }
             }
         }
     }
 
     post {
         always {
-            junit '**/surefire-reports/*.xml'
+            dir('FST-M1') {   // <--- report also inside same directory
+                junit '**/surefire-reports/*.xml'
+            }
         }
     }
 }
